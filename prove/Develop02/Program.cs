@@ -23,10 +23,7 @@ class Program
 
                 foreach (string line in lines)
                 {
-                    string[] parts = line.Split(",");
-
-                    string firstName = parts[0];
-                    string lastName = parts[1];
+                    journalOne.entries.Add(line);
                 }
             }
             Console.Write("Select an option\n1. Write\n2. Read\n3. Save\n4. Load\n5. Quit\n> ");
@@ -36,7 +33,7 @@ class Program
     }
 }
 class Journal{
-    List<string> entries = new List<string>();
+    public List<string> entries = new List<string>();
     public string timestamp;
     public string content;
     List<string> prompts = new List<string>();
