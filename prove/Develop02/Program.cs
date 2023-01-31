@@ -44,6 +44,8 @@ class Journal{
         prompts.Add("What is something you feel you did well today");
     }
     public void CreateEntry(){        
+        
+        //Saves the Date
         DateTime theCurrentTime = DateTime.Now;
         timestamp = theCurrentTime.ToShortDateString();
         Random generator = new Random();
@@ -69,7 +71,7 @@ class Journal{
         }
     }
 }
-class External{
+class Entry{
     public void loadJournal(){
         
     }
