@@ -64,7 +64,7 @@ class Journal{
         {
             // You can add text to the file with the WriteLine method
             foreach(var entry in entries){
-                outputFile.WriteLine();
+                outputFile.WriteLine(entry);
             }
         }
     }
