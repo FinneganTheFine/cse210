@@ -33,10 +33,9 @@ class Program
     }
 }
 class Journal{
-    public List<string> entries = new List<string>();
-    public string timestamp;
-    public string content;
-    List<string> prompts = new List<string>();
+    public List<Entry> entries;
+    
+    public List<string> prompts = new List<string>();
     public Journal(){
         prompts.Add("What did you do today?");
         prompts.Add("How are you feeling");
@@ -45,14 +44,11 @@ class Journal{
     }
     public void CreateEntry(){        
         
-        //Saves the Date
-        DateTime theCurrentTime = DateTime.Now;
-        timestamp = theCurrentTime.ToShortDateString();
+        
         Random generator = new Random();
         int phraseNumber = generator.Next(prompts.Count());
         Console.WriteLine(prompts[phraseNumber]);
-        content = Console.ReadLine();
-        entries.Add($"{timestamp} - {content}");
+        
     }
     public void readJournal(){
         foreach(var entry in entries){
@@ -72,6 +68,16 @@ class Journal{
     }
 }
 class Entry{
+    public string timestamp;
+    public string content;
+    public string prompt;
+    public void CreateEntry(){        
+        //Saves the Date
+        DateTime theCurrentTime = DateTime.Now;
+        timestamp = theCurrentTime.ToShortDateString();
+        content = Console.ReadLine();
+        entries.Add($"{timestamp} - {content}");
+    }
     public void loadJournal(){
         
     }
