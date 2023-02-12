@@ -12,7 +12,7 @@ class Program
         string bottomString = Console.ReadLine();
         int bottom = int.Parse(bottomString);
 
-        Fraction fraction1 = new Fraction();
+        Fraction fraction1 = new Fraction(top, bottom);
         Console.WriteLine(fraction1.getFractionString());
         Console.WriteLine(fraction1.getDecimalValue());
         Fraction fraction2 = new Fraction(5);
