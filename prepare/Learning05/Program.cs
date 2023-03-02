@@ -11,8 +11,8 @@ class Program
         var circle = new Circle("green", 7);
 
         shapes.Add(square);
-        shapes.Add(square);
-        shapes.Add(square);
+        shapes.Add(rectangle);
+        shapes.Add(circle);
 
         foreach (var s in shapes){
             Console.WriteLine(s.GetColor());
