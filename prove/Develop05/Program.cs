@@ -7,7 +7,9 @@ class Program
     {
         var goals = new List<Goal>();
         int points = 0;
+        int level = 0;
         Console.WriteLine($"Your points are :{points}");
+        Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
         Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
         int choice = int.Parse(Console.ReadLine());
         while (choice != 6){
@@ -41,14 +43,22 @@ class Program
                     var pointvalue = int.Parse(Console.ReadLine());
                     goals.Add(new Eternal(pointvalue, name, description));
                 }
+                if(points >= level*50){
+                    level+=1;
+                }
                 Console.WriteLine($"Your points are :{points}");
+                Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
                 Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
                 choice = int.Parse(Console.ReadLine());
             } else if(choice == 2){
                 foreach(var goal in goals){
                     Console.WriteLine(goal.Display());
                 }
+                if(points >= level*50){
+                    level+=1;
+                }
                 Console.WriteLine($"Your points are :{points}");
+                Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
                 Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
                 choice = int.Parse(Console.ReadLine());
             } else if(choice == 3){
@@ -58,7 +68,7 @@ class Program
 
                 foreach (string line in lines)
                 {
-                    string[] parts = line.Split(',');
+                    string[] parts = line.Split('-');
                     int type = int.Parse(parts[0]);
                     string name = parts[1];
                     string desc = parts[2];
@@ -80,7 +90,11 @@ class Program
                             break;
                     }
                 }
+                if(points >= level*50){
+                    level+=1;
+                }
                 Console.WriteLine($"Your points are :{points}");
+                Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
                 Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
                 choice = int.Parse(Console.ReadLine());
             } else if(choice == 4){
@@ -90,21 +104,39 @@ class Program
                 {
                     // You can add text to the file with the WriteLine method
                     foreach(var goal in goals){
-                        outputFile.WriteLine(goal.Display());
+                        outputFile.WriteLine(goal.Save());
                     }
                 }
+                if(points >= level*50){
+                    level+=1;
+                }
                 Console.WriteLine($"Your points are :{points}");
+                Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
                 Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
                 choice = int.Parse(Console.ReadLine());
             } else if(choice == 5){
+                var i=0;
                 foreach(var goal in goals){
-                    goal.Display();
-                    points += goal._pointvalue;
+                    if (!goal.completed){
+                        Console.WriteLine($"{i}{goal.Display()}");
+                        i+=1;
+                    }
+                    //points += goal._pointvalue;
+                }
+                Console.Write("What goal did you complete: ");
+                var comple = int.Parse(Console.ReadLine());
+                goals[comple].RecordEvent();
+                points += goals[comple]._pointvalue;
+                goals[comple].Unbonus();
+                if(points >= level*50){
+                    level+=1;
                 }
                 Console.WriteLine($"Your points are :{points}");
+                Console.WriteLine($"You're level {level}\nYou gain a level every 50 points");
                 Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
                 choice = int.Parse(Console.ReadLine());
             }
+            
         }
     }
 }
@@ -120,7 +152,7 @@ abstract class Goal{
         completed = false;
     }
 
-    public virtual void RecordGoal() {
+    public virtual void RecordEvent() {
         completed = true;
     }
 
@@ -133,6 +165,10 @@ abstract class Goal{
         return $"{_name} - {_description} - Point Value: {_pointvalue} - {completed}";
     }
     public abstract void MarkDone();
+    public abstract string Save();
+    public virtual void Unbonus(){
+        _pointvalue = _pointvalue*1;
+    }
 }
 class Simple: Goal{
     public Simple(int pointvalue, string name, string description) : base(pointvalue, name, description){
@@ -142,9 +178,19 @@ class Simple: Goal{
         completed = true;
     }
 
-    public override string Display()
+    public override string Display(){
+        return $"[Simple]\n{_name}\n{_description}\nPoints: {_pointvalue}\nCompleted: {(completed ? "Yes" : "No")}";
+    }
+    public override void RecordEvent() {
+        Console.WriteLine($"You completed the {_name} goal and earned {_pointvalue} points!");
+    }
+    public override string Save()
     {
-        return $"[Simple] {_name}\n{_description}\nPoints: {_pointvalue}\nCompleted: {(completed ? "Yes" : "No")}\n";
+        return $"1-{_name}-{_description}-{_pointvalue}-{completed}";
+    }
+    public override void Unbonus()
+    {
+        throw new NotImplementedException();
     }
 }
 class Checklist: Goal{
@@ -157,7 +203,7 @@ class Checklist: Goal{
     }
 
     public override string Display(){
-        return $"[Checklist] {_name} - {_description}\nPoints: {_pointvalue} each, Completed {_timesCompleted} out of {_goal} times";
+        return $"[Checklist]\n{_name}\n{_description}\nPoints: {_pointvalue} each\nCompleted {_timesCompleted} out of {_goal} times";
     }
 
     public override void MarkDone(){
@@ -167,6 +213,23 @@ class Checklist: Goal{
                 completed = true;
             }
         }
+    }
+    public override void RecordEvent() {
+        _timesCompleted++;
+        Console.WriteLine($"You completed the {_name} goal and earned {_pointvalue} points!");
+        if (_timesCompleted == _goal) {
+            Console.WriteLine($"You also earned a bonus of {_pointvalue*5} points for completing the goal {_goal} times!");
+            _pointvalue = _pointvalue*6;
+        }
+    }
+    public override void Unbonus(){
+        if (_timesCompleted == _goal){
+            _pointvalue = _pointvalue/6;
+        }
+    }
+    public override string Save()
+    {
+        return $"2-{_name}-{_description}-{_pointvalue}-{completed}-{_timesCompleted}-{_goal}";
     }
 }
 class Eternal: Goal{
@@ -178,6 +241,17 @@ class Eternal: Goal{
         Console.WriteLine($"Congratulations! You have completed the eternal goal '{_name}' and earned {_pointvalue} points.");
     }
     public override string Display(){
-        return $"[Eternal] {_name}\n{_description}\nPoints: {_pointvalue}\n";
+        return $"[Eternal]\n{_name}\n{_description}\nPoints: {_pointvalue}";
+    }
+    public override void RecordEvent() {
+        Console.WriteLine($"You completed the {_name} goal and earned {_pointvalue} points!");
+    }
+    public override string Save()
+    {
+        return $"3-{_name}-{_description}-{_pointvalue}-False";
+    }
+    public override void Unbonus()
+    {
+        throw new NotImplementedException();
     }
 }
