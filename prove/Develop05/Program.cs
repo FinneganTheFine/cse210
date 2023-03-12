@@ -41,10 +41,16 @@ class Program
                     var pointvalue = int.Parse(Console.ReadLine());
                     goals.Add(new Eternal(pointvalue, name, description));
                 }
+                Console.WriteLine($"Your points are :{points}");
+                Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
+                choice = int.Parse(Console.ReadLine());
             } else if(choice == 2){
                 foreach(var goal in goals){
                     Console.WriteLine(goal.Display());
                 }
+                Console.WriteLine($"Your points are :{points}");
+                Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
+                choice = int.Parse(Console.ReadLine());
             } else if(choice == 3){
                 Console.WriteLine("What is the name of the file you want to load\n> ");
                 string filename = Console.ReadLine();
@@ -74,6 +80,9 @@ class Program
                             break;
                     }
                 }
+                Console.WriteLine($"Your points are :{points}");
+                Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
+                choice = int.Parse(Console.ReadLine());
             } else if(choice == 4){
                 Console.WriteLine("What is the name of the file you want to save to\n> ");
                 string fileName = Console.ReadLine();
@@ -81,14 +90,20 @@ class Program
                 {
                     // You can add text to the file with the WriteLine method
                     foreach(var goal in goals){
-                        outputFile.WriteLine(goal);
+                        outputFile.WriteLine(goal.Display());
                     }
                 }
+                Console.WriteLine($"Your points are :{points}");
+                Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
+                choice = int.Parse(Console.ReadLine());
             } else if(choice == 5){
                 foreach(var goal in goals){
-                    Console.WriteLine($"{goal}");
+                    goal.Display();
                     points += goal._pointvalue;
                 }
+                Console.WriteLine($"Your points are :{points}");
+                Console.Write("Select an option\n1. Create New Goal\n2. List Goals\n3. Load Goals\n4. Save Goals\n5. Record Event\n6. Quit\n> ");
+                choice = int.Parse(Console.ReadLine());
             }
         }
     }
@@ -142,7 +157,7 @@ class Checklist: Goal{
     }
 
     public override string Display(){
-        return $"Checklist Goal: {_name} - {_description}\nPoints: {_pointvalue} each, Completed {_timesCompleted} out of {_goal} times";
+        return $"[Checklist] {_name} - {_description}\nPoints: {_pointvalue} each, Completed {_timesCompleted} out of {_goal} times";
     }
 
     public override void MarkDone(){
@@ -161,5 +176,8 @@ class Eternal: Goal{
 
     public override void MarkDone(){
         Console.WriteLine($"Congratulations! You have completed the eternal goal '{_name}' and earned {_pointvalue} points.");
+    }
+    public override string Display(){
+        return $"[Eternal] {_name}\n{_description}\nPoints: {_pointvalue}\n";
     }
 }
