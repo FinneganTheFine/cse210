@@ -2,6 +2,7 @@ using System;
 
 class Program
 {
+    static World world = new World();
     static void Main(string[] args)
     {
         string action;
@@ -22,7 +23,7 @@ class Program
             case "use stick":
                 break;
             case "use sword":
-                if (World.position == 8){
+                if (world.position == 8){
 
                 }
                 break;
